@@ -8,4 +8,7 @@ pip install pygame
 ```
 
 ## Usage
-After installing pygame, in root directory run command  python main.py
+After installing pygame, in root directory run command.
+```bash
+python main.py
+```
