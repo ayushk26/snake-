@@ -1,151 +1,13 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
 import pygame
 import sys
 import math
 import random
+from files.snakedot import Snake
+from files.food_dot import Food
+from files.distance import distance
+import time
 
 pygame.init()
-
-def distance(x1, y1, x2, y2):
-    return math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2))
-
-
-
-class Snake():
-
-    def __init__(self, screen):
-        self.snake_dot = pygame.image.load('dot.png')
-        self.screen = screen
-        self.speed = 1
-        self.distance = []
-        self.turns = 90
-        self.x = 0
-        self.y = 0
-        self.tapy = 0
-        self.tapx = 0
-        self.vx = 0
-        self.vy = -1 * self.speed
-
-        if self.turns % 360 == 0:
-            self.dir = "right"
-        if self.turns % 360 == 90:
-            self.dir = "up"
-        if self.turns % 360 == 180:
-            self.dir = "left"
-        if self.turns % 360 == 270:
-            self.dir = "down"
-
-    def draw(self, x, y):
-        self.screen.blit(self.snake_dot, (x, y))
-
-    def follow(self, object):
-        self.object = object
-
-        if distance(self.object.tapx, self.object.tapy, self.x, self.y) <= 0.01:
-            self.tapx = self.x
-            self.tapy = self.y
-            # Conditions of turning
-            if self.object.turns - self.turns == 90 or self.object.turns - self.turns == -270:
-                if self.object.dir == "up":
-                    self.vx = 0
-                    self.vy = -1 * self.speed
-                    self.turns += 90
-                    self.turns = self.turns % 360
-                if self.object.dir == "left":
-                    self.vy = 0
-                    self.vx = -1 * self.speed
-                    self.turns += 90
-                    self.turns = self.turns % 360
-                if self.object.dir == "down":
-                    self.vx = 0
-                    self.vy = self.speed
-                    self.turns += 90
-                    self.turns = self.turns % 360
-                if self.object.dir == "right":
-                    self.vy = 0
-                    self.vx = self.speed
-                    self.turns += -270
-                    self.turns = self.turns % 360
-
-            if self.object.turns - self.turns == -90 or self.object.turns - self.turns == 270:
-
-                if self.object.dir == "up":
-                    self.vx = 0
-                    self.vy = -1 * self.speed
-                    self.turns += -90
-                    self.turns = self.turns % 360
-                if self.object.dir == "left":
-                    self.vy = 0
-                    self.vx = -1 * self.speed
-                    self.turns += -90
-                    self.turns = self.turns % 360
-                if self.object.dir == "down":
-                    self.vx = 0
-                    self.vy = self.speed
-                    self.turns += 270
-                    self.turns = self.turns % 360
-                if self.object.dir == "right":
-                    self.vy = 0
-                    self.vx = self.speed
-                    self.turns += -90
-                    self.turns = self.turns % 360
-
-    def add(self,object):
-
-        self.object = object
-        self.dir = object.dir
-        self.vx =self.object.vx
-        self.vy =self.object.vy
-        self.turns = self.object.turns
-        if self.dir =='right':
-            self.start_x = self.object.x - 32
-            self.start_y = self.object.y
-        if self.dir =='left':
-            self.start_x = self.object.x + 32
-            self.start_y = self.object.y
-        if self.dir =='up':
-            self.start_y = self.object.y + 32
-            self.start_x = self.object.x
-        if self.dir =='down':
-            self.start_y = self.object.y - 32
-            self.start_x = self.object.x
-        self.x = self.start_x
-        self.y = self.start_y
-
-
-
-class Food():
-
-    def __init__(self,screen,x,y):
-        self.screen =screen
-        self.food_dot =pygame.image.load('dot.png')
-        self.food_state = "active"
-        self.x =x
-        self.y =y
-        self.state = 'not_eaten'
-    def draw(self):
-        if self.food_state == "active":
-            self.screen.blit(self.food_dot, (self.x, self.y))
-
-    def eaten(self,object,dot):
-        self.dot =dot
-        self.object =object
-        if distance(self.dot.x,self.dot.y,self.x,self.y) <= 30:
-            self.x =10000
-            self.y =10000
-            self.state = 'eaten'
-
-
-
-
-
-
-
 
 def run_game():
     screen = pygame.display.set_mode((1000,700))
@@ -182,6 +44,8 @@ def run_game():
     start_text = fontf.render(start_texts1, True, (0, 0, 0), (255, 255, 255))
     start_texts2 = 'GET READY FOR A RIDE!!!'
     start_text2 = fontf2.render(start_texts2, True, (255, 0, 0), (255, 255, 255))
+    restart_text = 'Restarting in '
+    restart_texts = fontf.render(restart_text,True,(0,0,0),(255,255,255))
 
 
     running = True
@@ -283,7 +147,7 @@ def run_game():
                 number +=1
                 score += 1
                 for i in range(0,number):
-                    dot[number-i-1].speed += 0.0001
+                    dot[number-i-1].speed += 0.00001
 
 
 
@@ -296,11 +160,21 @@ def run_game():
                 pygame.display.flip()
                 for i in range (0,number):
                     dot[i].speed = 0
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        running =False
-                        sys.exit()
-                        break
+                
+                for i in range(0,6):
+                    time.sleep(1)
+                    restart_text = 'Restarting in '+str(5-i)
+                    restart_texts = fontf.render(restart_text,True,(0,0,0),(255,255,255))
+                    screen.blit(restart_texts,(325,400))
+                    pygame.display.flip()
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            running =False
+                            sys.exit()
+                            break
+
+                run_game()
+                
 
         score_text = 'Score : ' + str(score)
         scores = score_font.render(score_text, True, (0, 0, 0), (255, 255, 255))
