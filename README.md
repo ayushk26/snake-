@@ -1,9 +1,11 @@
-# snake-
+# Snake-pygame
 made using pygame 
 
-To use this game 
-1) Download all the contents of repository.
-2) Click main.exe
+## Installation
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install pygame.
+```bash
+pip install pygame
+```
 
-Restart function not yet added.
-To play the game -> close the window and start again :( 
+## Usage
+After installing pygame, in root directory run command  python main.py
