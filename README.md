@@ -1,5 +1,5 @@
-# Snake-pygame
-made using pygame 
+# Snake 2D
+Classical snake game made using pygame liberary.
 
 ## Installation
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install pygame.
