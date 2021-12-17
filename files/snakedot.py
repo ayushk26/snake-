@@ -33,7 +33,7 @@ class Snake():
     def follow(self, object):
         self.object = object
 
-        if distance(self.object.tapx, self.object.tapy, self.x, self.y) <= 0.04:
+        if distance(self.object.tapx, self.object.tapy, self.x, self.y) <= 0.07:
             self.tapx = self.x
             self.tapy = self.y
             # Conditions of turning
